@@ -34,15 +34,5 @@ export class SocketGateway implements OnGatewayConnection {
   @SubscribeMessage('chat')
   chat(client: MyWebSocket, data: { message: string }) {
     this.socketService.sendMessage(data.message);
-    // this.sendBroadcast(client, data.message);
   }
-
-  // // отправить сообщение всем кроме автора
-  // private sendBroadcast(sourceClient: MyWebSocket, message: string) {
-  //   for (const id in this.connectedSockets) {
-  //     if (sourceClient.id !== id) {
-  //       this.connectedSockets[id].send(message);
-  //     }
-  //   }
-  // }
 }

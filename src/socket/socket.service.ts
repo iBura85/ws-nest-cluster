@@ -44,8 +44,10 @@ export class SocketService implements OnModuleInit, OnModuleDestroy {
     this.publisherClient = await this.newRedisClient();
     this.subscriberClient = await this.newRedisClient();
 
+    // Подисаться на Redis
     this.subscriberClient.subscribe(this.serviceId);
 
+    // При получении сообщения из подписки Redis 
     this.subscriberClient.on('message', (channel: string, message: string) => {
       this.sendMessage(message, true);
     });
@@ -53,16 +55,27 @@ export class SocketService implements OnModuleInit, OnModuleDestroy {
     await this.channelDiscovery();
   }
 
+  /**
+   * Отправка сообщения
+   * @param message сообщение для отправки
+   * @param fromRedisChannel фугкция вызвана из подписки Redis
+   */
   sendMessage(message: string, fromRedisChannel = false) {
+    // отправить сообщение всем клинетам ws текующего инстанса
     for (const id in SocketClients.list) {
       const socketClient = SocketClients.list[id];
       socketClient.send(message);
     }
 
+    // если сообщение пришло не с подписки Redis
+    // тоесть данное сообщение необходимо опубликовать для всех инстансов подписанных на Redis канал
     if (!fromRedisChannel) {
+      // получить список всех подписанных инстансов
       this.redisClient.keys('SOCKET_CHANNEL_*', (err: Error, ids: string[]) => {
         ids
+          // не использовать текущий инстанс
           .filter((p) => p != this.serviceId)
+          // опубликовать сообщения для каждого подписанного инстанса
           .forEach((id) => {
             this.publisherClient.publish(id, message);
           });
