@@ -4,9 +4,9 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { v4 } from 'uuid';
-import { MyWebSocket } from './MyWebScoket';
+import { MyWebSocket } from './types';
 import { SocketService } from './socket.service';
-import { SocketClients } from './socket-clients.service';
+import { SocketClients } from './socket-clients';
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayConnection {

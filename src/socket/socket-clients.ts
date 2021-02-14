@@ -1,4 +1,4 @@
-import { MyWebSocket } from './MyWebScoket';
+import { MyWebSocket } from './types';
 
 export class SocketClients {
   static list: Record<string, MyWebSocket> = {};

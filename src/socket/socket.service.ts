@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { createClient, RedisClient } from 'redis';
-import { SocketClients } from './socket-clients.service';
+import { SocketClients } from './socket-clients';
 
 @Injectable()
 export class SocketService implements OnModuleInit, OnModuleDestroy {
@@ -47,7 +47,7 @@ export class SocketService implements OnModuleInit, OnModuleDestroy {
     // Подисаться на Redis
     this.subscriberClient.subscribe(this.serviceId);
 
-    // При получении сообщения из подписки Redis 
+    // При получении сообщения из подписки Redis
     this.subscriberClient.on('message', (channel: string, message: string) => {
       this.sendMessage(message, true);
     });
